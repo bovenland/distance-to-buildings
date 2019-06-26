@@ -4,9 +4,8 @@
   <meta charset='utf-8' />
   <title>Distance to Buildings</title>
   <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
-  <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css' rel='stylesheet' />
   <style>
   body {
     margin: 0;
@@ -19,19 +18,8 @@
   }
 
   #map {
-    /* position: absolute; */
-    /* top: 0; */
-    /* bottom: 0; */
     height: 100%;
     width: 100%;
-  }
-
-  #controls {
-    height: 50px;
-  }
-
-  #controls #sequence {
-    width: 60%;
   }
   </style>
 </head>
@@ -40,21 +28,15 @@
 
 </div>
 <script>
-  function getPoint (coordinates) {
-    return {
-      type: 'FeatureCollection',
-      features: [{
-        type: 'Feature',
-        properties: {},
-        geometry: {
-          type: 'Point',
-          coordinates: coordinates
-        }
-      }]
-    }
+  var tileBase
+
+  if (window.location.hostname === 'localhost') {
+    tileBase = window.location.origin
+  } else {
+    tileBase = 'https://boven.land/distance-to-buildings'
   }
 
-  var feature
+  var tileUrl = tileBase + '/tiles/{z}/{x}/{y}.pbf'
 
   mapboxgl.accessToken = 'pk.eyJ1IjoiYmVydHNwYWFuIiwiYSI6ImR3dERiQk0ifQ.DLbScmbRohc3Sqv7prfhqw'
 
@@ -72,17 +54,13 @@
   })
 
   var colors = [
-    '#a50026',
-    '#d73027',
-    '#f46d43',
-    '#fdae61',
-    '#fee08b',
-    '#d9ef8b',
-    '#a6d96a',
-    '#66bd63',
-    '#1a9850',
-    '#006837'
+    '#005500',
+    '#eae721',
+    '#f555e5',
+    '#fd0c10'
   ]
+
+  var range = [0, 10000]
 
   map.on('load', function () {
     map.addLayer({
@@ -91,24 +69,21 @@
       maxZoom: 13,
       source: {
         type: 'vector',
-        tiles: ['https://boven.land/distance-to-buildings/tiles/{z}/{x}/{y}.pbf']
+        tiles: [tileUrl]
       },
       'source-layer': 'buildingscontoursclipped',
       layout: {
-        "line-cap": "round",
-        "line-join": "round"
+        'line-cap': 'round',
+        'line-join': 'round'
       },
       paint: {
         'line-opacity': 0.8,
         'line-color':  {
           property: 'ELEV',
-          stops:  Array.from({length: 10}, (_, i) => ([
-            i * 250, colors[i]
-          ]))
+          stops: colors.map((color, index) => [range[1] / colors.length * index, color])
         },
         'line-width': ['case',
-          ['==', ['%', ['get', 'ELEV'], 1000], 0], 3,
-          ['==', ['%', ['get', 'ELEV'], 500], 0], 1,
+          ['==', ['%', ['get', 'ELEV'], 1000], 0], 2,
           0.5
         ]
       }
