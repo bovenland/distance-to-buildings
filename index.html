@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Distance to Buildings</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+
+  #map {
+    /* position: absolute; */
+    /* top: 0; */
+    /* bottom: 0; */
+    height: 100%;
+    width: 100%;
+  }
+
+  #controls {
+    height: 50px;
+  }
+
+  #controls #sequence {
+    width: 60%;
+  }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+
+</div>
+<script>
+  function getPoint (coordinates) {
+    return {
+      type: 'FeatureCollection',
+      features: [{
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: coordinates
+        }
+      }]
+    }
+  }
+
+  var feature
+
+  mapboxgl.accessToken = 'pk.eyJ1IjoiYmVydHNwYWFuIiwiYSI6ImR3dERiQk0ifQ.DLbScmbRohc3Sqv7prfhqw'
+
+  var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/dark-v9',
+    center: [
+      6.3702,
+      53.4437
+    ],
+    zoom: 13.2,
+    minZoom: 6,
+    maxZoom: 13,
+    hash: true
+  })
+
+  var colors = [
+    '#a50026',
+    '#d73027',
+    '#f46d43',
+    '#fdae61',
+    '#fee08b',
+    '#d9ef8b',
+    '#a6d96a',
+    '#66bd63',
+    '#1a9850',
+    '#006837'
+  ]
+
+  map.on('load', function () {
+    var origin = window.location.origin
+
+    map.addLayer({
+      id: 'contours',
+      type: 'line',
+      maxZoom: 13,
+      source: {
+        type: 'vector',
+        tiles: [origin + '/tiles/{z}/{x}/{y}.pbf']
+      },
+      'source-layer': 'buildingscontoursclipped',
+      layout: {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      paint: {
+        'line-opacity': 0.8,
+        'line-color':  {
+          property: 'ELEV',
+          stops:  Array.from({length: 10}, (_, i) => ([
+            i * 250, colors[i]
+          ]))
+        },
+        'line-width': ['case',
+          ['==', ['%', ['get', 'ELEV'], 1000], 0], 3,
+          ['==', ['%', ['get', 'ELEV'], 500], 0], 1,
+          0.5
+        ]
+      }
+    }, 'waterway-label')
+
+    //     map.addLayer({
+    //   "id": "countour-labels",
+    //   "type": "symbol",
+    //   source: {
+    //         type: 'vector',
+    //         tiles: ['http://localhost:7777/{z}/{x}/{y}.pbf']
+    //       },
+    //       'source-layer': 'contours',
+    //   'layout': {
+    //     'visibility': 'visible',
+    //     'symbol-placement': 'line',
+    //     'text-field': ['concat', ['to-string', ['get', 'ELEV']], 'm']
+    //   },
+    //   'paint': {
+    //     'icon-color': '#877b59',
+    //     'icon-halo-width': 1,
+    //     'text-color': '#877b59',
+    //     'text-halo-width': 1
+    //   }
+    // })
+  })
+  </script>
+</body>
+</html>

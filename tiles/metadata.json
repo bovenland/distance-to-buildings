@@ -1,0 +1,13 @@
+{
+    "name": "buildings-contours-clipped.mbtiles", 
+    "generator": "tippecanoe v1.32.5", 
+    "format": "pbf", 
+    "description": "buildings-contours-clipped.mbtiles", 
+    "json": "{\"vector_layers\": [ { \"id\": \"buildingscontoursclipped\", \"description\": \"\", \"minzoom\": 0, \"maxzoom\": 12, \"fields\": {\"ELEV\": \"Number\"} } ],\"tilestats\": {\"layerCount\": 1,\"layers\": [{\"layer\": \"buildingscontoursclipped\",\"count\": 24009,\"geometry\": \"LineString\",\"attributeCount\": 1,\"attributes\": [{\"attribute\": \"ELEV\",\"count\": 42,\"type\": \"number\",\"values\": [0,1000,10000,10250,1250,1500,1750,2000,2250,250,2500,2750,3000,3250,3500,3750,4000,4250,4500,4750,500,5000,5250,5500,5750,6000,6250,6500,6750,7000,7250,750,7500,7750,8000,8250,8500,8750,9000,9250,9500,9750],\"min\": 0,\"max\": 10250}]}]}}", 
+    "bounds": "3.358565,50.750481,7.227476,53.556488", 
+    "minzoom": "0", 
+    "version": "2", 
+    "maxzoom": "12", 
+    "type": "overlay", 
+    "center": "4.790039,51.754232,12"
+}
