@@ -85,15 +85,13 @@
   ]
 
   map.on('load', function () {
-    var origin = window.location.origin
-
     map.addLayer({
       id: 'contours',
       type: 'line',
       maxZoom: 13,
       source: {
         type: 'vector',
-        tiles: [origin + '/tiles/{z}/{x}/{y}.pbf']
+        tiles: ['https://boven.land/distance-to-buildings/tiles/{z}/{x}/{y}.pbf']
       },
       'source-layer': 'buildingscontoursclipped',
       layout: {
