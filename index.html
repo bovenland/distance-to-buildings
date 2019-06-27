@@ -36,6 +36,11 @@
     tileBase = 'https://boven.land/distance-to-buildings'
   }
 
+  var inIFrame = false
+  if (window.location !== window.parent.location) {
+    inIFrame = true
+  }
+
   var tileUrl = tileBase + '/tiles/{z}/{x}/{y}.pbf'
 
   mapboxgl.accessToken = 'pk.eyJ1IjoiYmVydHNwYWFuIiwiYSI6ImR3dERiQk0ifQ.DLbScmbRohc3Sqv7prfhqw'
@@ -50,7 +55,8 @@
     zoom: 13.2,
     minZoom: 6,
     maxZoom: 13,
-    hash: true
+    hash: true,
+    scrollZoom: !inIFrame
   })
 
   var colors = [
